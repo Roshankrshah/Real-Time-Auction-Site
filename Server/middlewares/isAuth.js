@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 module.exports = (req,res,next)=>{
     const token = req.get('x-auth-token');
     if(!token){
-        return res.send(401).json({errors: [{msg: 'Invalid token, not logged in'}]});
+        return res.status(401).json({errors: [{msg: 'Invalid token, not logged in'}]});
     }
 
     try {
