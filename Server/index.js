@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const connectDB = require('./db/config');
 const auth = require('./routes/auth');
+const user = require('./routes/user');
 const app = express();
 
 app.use(express.json());
@@ -18,6 +19,7 @@ app.get('/',(req,res)=>{
 });
 
 app.use('/auth',auth);
+app.use('/user',user);
 
 const PORT = process.env.PORT || 4444;
 
