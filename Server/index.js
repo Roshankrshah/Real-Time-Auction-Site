@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./db/config');
+const auth = require('./routes/auth');
 const app = express();
 
 app.use(express.json());
@@ -14,7 +15,9 @@ app.use((req, res, next) => {
 
 app.get('/',(req,res)=>{
     res.send('Starting Online Auction website');
-})
+});
+
+app.use('/auth',auth);
 
 const PORT = process.env.PORT || 4444;
 
