@@ -1,26 +1,45 @@
 const mongoose = require('mongoose');
+const types = mongoose.Types;
 
 const userSchema = new mongoose.Schema({
-    username:{
+    username: {
         type: String,
         required: true,
     },
-    email:{
+    email: {
         type: String,
         required: true,
     },
-    password:{
+    password: {
         type: String,
         required: true,
     },
-    phone:{
+    phone: {
         type: String,
         required: false,
     },
-    address:{
+    address: {
         type: String,
         required: false,
     },
+    purchasedProducts: [
+        {
+            type: types.ObjectId,
+            ref: 'Ad'
+        }
+    ],
+    postedAds: [
+        {
+            type: types.ObjectId,
+            ref: 'Ad'
+        }
+    ],
+    bids: [
+        {
+            type: types.ObjectId,
+            ref: 'Ad'
+        }
+    ]
 });
 
-module.exports = mongoose.model('User',userSchema);
+module.exports = mongoose.model('User', userSchema);
