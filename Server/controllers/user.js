@@ -54,6 +54,22 @@ const registerUser = async (req, res) => {
     }
 }
 
+const getUserById = async(req,res) =>{
+    const id = req.params.id;
+    console.log(id);
+    try{
+        const user = await User.findById(id);
+        if(!user){
+            return res.status(404).json({errors: [{msg: 'User not Found'}]});
+        }
+        return res.status(200).json({user});
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({errors: [{msg: 'Server error'}]});
+    }
+}
+
 module.exports = {
-    registerUser
+    registerUser,
+    getUserById
 }
