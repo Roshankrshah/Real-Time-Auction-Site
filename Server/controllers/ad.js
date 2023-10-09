@@ -90,8 +90,40 @@ const findAd = async(req,res)=>{
     }
 }
 
+const updateAd = async(req,res)=>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array(),
+        });
+    }
+
+    const adId = req.params.id;
+
+    try {
+        const ad = await Ad.findById(adId);
+        if(!ad) return res.status(404).json({errors: [{msg: 'Ad not found'}]});
+        if(ad.owner != req.user.id){
+            return res.status(401).json({errors: [{msg: 'Unauthorized to update this ad'}]});
+        }
+
+        if(req.body.basePrice){
+            req.body.currentPrice = req.body.basePrice;
+        }
+
+        let updatedAd = await Ad.findByIdAndUpdate(adId,req.body);
+        updatedAd = await Ad.findById(adId);
+
+        res.status(201).json(updatedAd);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ errors: [{ msg: 'Server error' }] });
+    }
+}
+
 module.exports = {
     addAd,
     retrieveAds,
-    findAd
+    findAd,
+    updateAd
 }
