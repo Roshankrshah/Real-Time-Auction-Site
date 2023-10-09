@@ -1,12 +1,21 @@
 require('dotenv').config();
 const express = require('express');
+
+const {createServer} = require('http');
+const socketio = require('./socket');
+
 const connectDB = require('./db/config');
+
 const auth = require('./routes/auth');
 const user = require('./routes/user');
 const ad = require('./routes/ad');
 const upload = require('./routes/upload');
 const room = require('./routes/room');
+
 const app = express();
+const server = createServer(app);
+const io = socketio.init(server);
+//adido
 
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
@@ -36,11 +45,19 @@ app.use('/room',room);
 
 const PORT = process.env.PORT || 4444;
 
+io.on('connection',(socket)=>{
+    socket.on('disconnect',(reason)=>{
+
+    });
+    socket.on('leaveHome',()=>{
+        socket.disconnect();
+    })
+});
 
 const start = async()=>{
     try {
         await connectDB(process.env.MONGO_URI);
-        app.listen(PORT,()=>{
+        server.listen(PORT,()=>{
             console.log(`Server is listening on http://localhost:${PORT}`);
         })
     } catch (error) {
