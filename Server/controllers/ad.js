@@ -114,8 +114,28 @@ const updateAd = async(req,res)=>{
         let updatedAd = await Ad.findByIdAndUpdate(adId,req.body);
         updatedAd = await Ad.findById(adId);
 
-        res.status(201).json(updatedAd);
+        res.status(200).json(updatedAd);
     } catch (error) {
+        console.log(error);
+        res.status(500).json({ errors: [{ msg: 'Server error' }] });
+    }
+}
+
+const deleteAd = async(req,res)=>{
+    const adId = req.params.id;
+    try{
+        let ad = await Ad.findById(adId);
+        if(!ad) return res.status(404).json({errors: [{msg: 'Ad not found'}]});
+        if(ad.owner != req.user.id)
+            return res.status(401).json({errors: [{msg: 'Unauthorized to delete this ad'}]});
+        
+        if(ad.auctionStarted || ad.auctionEnded){
+            return res.status(402).json({errors: [{msg: 'Cannot delete, auction started/ended'}]});
+        }
+
+        await Ad.deleteOne(ad);
+        res.status(200).json({msg: 'Deleted'});
+    }catch (error) {
         console.log(error);
         res.status(500).json({ errors: [{ msg: 'Server error' }] });
     }
@@ -125,5 +145,6 @@ module.exports = {
     addAd,
     retrieveAds,
     findAd,
-    updateAd
+    updateAd,
+    deleteAd
 }
