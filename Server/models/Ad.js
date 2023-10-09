@@ -75,7 +75,11 @@ const adSchema = new mongoose.Schema(
                     default: Date.now()
                 },
             }
-        ]
+        ],
+        room: {
+            type: types.ObjectId,
+            ref: 'Room'
+        }
     },
     { timestamps: true }
 );
