@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 const Ad = require('../models/Ad');
 const User = require('../models/User');
+const Room = require('../models/Room');
 
 const addAd = async (req, res) => {
     const errors = validationResult(req);
@@ -15,7 +16,7 @@ const addAd = async (req, res) => {
     if (duration === null || duration === 0) duration = 300;
     if (duration > 10880) duration = 3600;
 
-    // image = image === ''?'': `${process.env.}`
+    //image = image === ''?'': `${process.env.}`
 
     const timer = duration;
 
@@ -31,11 +32,18 @@ const addAd = async (req, res) => {
             description,
             owner: req.user.id,
         });
+
+        let room = new Room({ad: ad._id});
+        room = await room.save();
+
+        ad.room = room._id;
         ad = await ad.save();
 
         const user = await User.findById(ad.owner);
         user.postedAds.push(ad._id);
         await user.save();
+
+        //socket
 
         res.status(200).json({ ad });
     } catch (error) {
