@@ -5,6 +5,7 @@ const auth = require('./routes/auth');
 const user = require('./routes/user');
 const ad = require('./routes/ad');
 const upload = require('./routes/upload');
+const room = require('./routes/room');
 const app = express();
 
 const cloudinary = require('cloudinary').v2;
@@ -31,6 +32,7 @@ app.use('/auth',auth);
 app.use('/user',user);
 app.use('/ad',ad);
 app.use('/upload',upload);
+app.use('/room',room);
 
 const PORT = process.env.PORT || 4444;
 
