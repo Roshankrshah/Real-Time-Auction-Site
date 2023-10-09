@@ -11,7 +11,7 @@ router.post('/', [
     body('password', 'Enter valid password with min length of 6 characters').exists().trim().isLength({ min: 6 })
 ], registerUser);
 
-router.get('/:id',getUserById);
+router.get('/:id',isAuth,getUserById);
 
 router.get('/products/purchased',isAuth,purchasedProducts);
 router.get('/products/posted',isAuth,postedProducts);
