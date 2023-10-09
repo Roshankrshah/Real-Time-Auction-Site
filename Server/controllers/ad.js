@@ -70,7 +70,28 @@ const retrieveAds = async(req,res)=>{
     }
 }
 
+const findAd = async(req,res)=>{
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            errors: errors.array(),
+        });
+    }
+
+    const adId = req.params.id;
+
+    try {
+        const ad = await Ad.findById(adId).populate('owner',{password:0});
+        if(!ad) return res.status(404).json({errors: [{msg: 'Ad not found'}]});
+        res.status(201).json(ad);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ errors: [{ msg: 'Server error' }] });
+    }
+}
+
 module.exports = {
     addAd,
-    retrieveAds
+    retrieveAds,
+    findAd
 }

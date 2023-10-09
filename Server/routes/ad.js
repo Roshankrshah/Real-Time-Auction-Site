@@ -3,7 +3,7 @@ const { body } = require('express-validator');
 const router = express.Router();
 
 const isAuth = require('../middlewares/isAuth');
-const {addAd, retrieveAds} = require('../controllers/ad');
+const {addAd, retrieveAds,findAd} = require('../controllers/ad');
 
 
 router.post('/',isAuth,[
@@ -13,4 +13,5 @@ router.post('/',isAuth,[
 ],addAd);
 
 router.get('/?',isAuth,retrieveAds);
+router.get('/:id',isAuth,findAd);
 module.exports = router;
