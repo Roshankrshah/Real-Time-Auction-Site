@@ -16,7 +16,7 @@ const auction = require('./routes/auction')
 const app = express();
 const server = createServer(app);
 const io = socketio.init(server);
-//adido
+const adIo = socketio.initAdIo(server,'/socket/adpage');
 
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
