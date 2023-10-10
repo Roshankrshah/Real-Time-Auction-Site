@@ -34,10 +34,11 @@ registerBtn.addEventListener('click', async (e) => {
         const resData = await res.json();
         if(res.status >= 400){
             alert(resData.errors[0].msg)
+        }else {
+            console.log(resData);
+            localStorage.setItem('token', resData.token);
+            location.href = '/Client/homePage/home.html'
         }
-        console.log(resData);
-        
-        localStorage.setItem('token', resData.token);
     } else {
         alert('Check Password Again');
     }

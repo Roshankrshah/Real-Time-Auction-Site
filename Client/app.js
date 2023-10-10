@@ -1,17 +1,17 @@
 const loginBtn = document.querySelector('.login-btn');
 
-loginBtn.addEventListener('click',async(e)=>{
+loginBtn.addEventListener('click', async (e) => {
     e.preventDefault();
     const email = document.getElementById('InputEmail').value;
     const password = document.getElementById('InputPassword').value;
     //console.log(email,password);
 
     const body = {
-        email : email,
+        email: email,
         password: password
     };
 
-    const res = await fetch('http://localhost:4444/auth',{
+    const res = await fetch('http://localhost:4444/auth', {
         method: 'POST',
         body: JSON.stringify(body),
         headers: {
@@ -19,7 +19,12 @@ loginBtn.addEventListener('click',async(e)=>{
         },
     });
     const resData = await res.json();
-    console.log(resData);
-    localStorage.setItem('token',resData.token);
+    if (res.status >= 400) {
+        alert(resData.errors[0].msg)
+    } else {
+        console.log(resData);
+        localStorage.setItem('token', resData.token);
+        location.href = '/Client/homePage/home.html'
+    }
 
 })
