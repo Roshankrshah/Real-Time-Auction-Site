@@ -1,0 +1,26 @@
+.container-fluid {
+    padding-left: 50px;
+}
+
+.auth-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 50px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.form-title{
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.mb-3{
+    width: 350px;
+}
+
+.footer-text{
+    margin-top: 20px;
+}
