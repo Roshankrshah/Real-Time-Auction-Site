@@ -54,6 +54,19 @@ io.on('connection',(socket)=>{
     })
 });
 
+adIo.on('connect',(socket)=>{
+    socket.on('joinAd',({ad})=>{
+        socket.join(ad.toString());
+    });
+    socket.on('leaveAd',({ad})=>{
+        socket.leave(ad.toString());
+    });
+
+    socket.on('disconnect',()=>{
+        
+    })
+})
+
 const start = async()=>{
     try {
         await connectDB(process.env.MONGO_URI);
