@@ -1,5 +1,6 @@
 const imageDom = document.querySelector('#imageFile');
 const submitBtn = document.querySelector('.submit');
+const logoutBtn = document.querySelector('.logout-btn');
 
 let imagePath = '';
 imageDom.addEventListener('change', async (e) => {
@@ -62,4 +63,10 @@ submitBtn.addEventListener('click', async (e) => {
         alert('Ad Posted');
         console.log(resData);
     }
+});
+
+logoutBtn.addEventListener('click',()=>{
+    localStorage.clear();
+    location.href = '/Client/index.html';
 })
+

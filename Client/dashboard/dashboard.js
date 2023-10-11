@@ -1,4 +1,5 @@
 const userDetails = document.querySelector('.user-details');
+const logoutBtn = document.querySelector('.logout-btn');
 
 const start = async()=>{
     const res = await fetch(`http://localhost:4444/auth`,{
@@ -20,5 +21,10 @@ const start = async()=>{
     }
     
 }
+
+logoutBtn.addEventListener('click',()=>{
+    localStorage.clear();
+    location.href = '/Client/index.html';
+});
 
 start();
