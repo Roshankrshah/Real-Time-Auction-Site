@@ -1,4 +1,5 @@
 const express = require('express');
+const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.post('/image',isAuth,upload.single('image'),async(req,res)=>{
             folder: "Auction",
             resource_type: "image"
         });
+        fs.unlinkSync(file.path);
         res.status(201).json({imagePath: result.secure_url});
     }catch(error){
         console.log(error);
