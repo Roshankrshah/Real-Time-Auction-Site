@@ -28,11 +28,11 @@ imageDom.addEventListener('change', async (e) => {
 submitBtn.addEventListener('click', async (e) => {
     e.preventDefault();
 
-    const productName = document.getElementById('InputName');
-    const category = document.getElementById('InputCategory');
-    const price = document.getElementById('InputPrice');
-    const duration = document.getElementById('InputDuration');
-    const desc = document.getElementById('InputDescription');
+    const productName = document.getElementById('InputName').value;
+    const category = document.getElementById('InputCategory').value;
+    const price = document.getElementById('InputPrice').value;
+    const duration = document.getElementById('InputDuration').value;
+    const desc = document.getElementById('InputDescription').value;
     const body = {
         productName : productName,
         basePrice: price,
@@ -49,10 +49,17 @@ submitBtn.addEventListener('click', async (e) => {
         body.image = imagePath;
     }
 
-    axios.post('http://localhost:4444/ad',body,{
+    const res = await axios.post('http://localhost:4444/ad',body,{
         headers: {
             'x-auth-token': localStorage.getItem('token'),
             'Content-Type': 'application/json'
         }
-    })
+    });
+    const resData = await res.data;
+    if(res.status >= 400){
+        alert(resData.errors[0].msg);
+    }else{
+        alert('Ad Posted');
+        console.log(resData);
+    }
 })
