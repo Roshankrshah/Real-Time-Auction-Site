@@ -1,5 +1,5 @@
 const userDetails = document.querySelector('.user-details');
-const postAdsDetails = document.querySelector('.postAd-details');
+const postAdsContainer = document.querySelector('.postAd-crousel');
 const logoutBtn = document.querySelector('.logout-btn');
 const carouselDOM = document.querySelector('.carousel-indicators');
 const carouselInner = document.querySelector('.carousel-inner');
@@ -36,7 +36,7 @@ const start = async () => {
         let totalAds = postAdsData.length;
         
         if(totalAds === 0){
-            postAdsDetails.innerHTML = `<p>No ads posted</p>`;
+            postAdsContainer.innerHTML = `<p>No ads posted</p>`;
         }else{
             let noOfIndicator = Math.ceil(totalAds/4);
             console.log(noOfIndicator);
