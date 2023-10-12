@@ -28,7 +28,7 @@ imageDom.addEventListener('change', async (e) => {
 
 submitBtn.addEventListener('click', async (e) => {
     e.preventDefault();
-
+    
     const productName = document.getElementById('InputName').value;
     const category = document.getElementById('InputCategory').value;
     const price = document.getElementById('InputPrice').value;
@@ -68,5 +68,5 @@ submitBtn.addEventListener('click', async (e) => {
 logoutBtn.addEventListener('click',()=>{
     localStorage.clear();
     location.href = '/Client/index.html';
-})
+});
 
