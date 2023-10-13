@@ -2,6 +2,7 @@ const productImageDom = document.querySelector('.product-image');
 const productDetailDom = document.querySelector('.product-details');
 const dynamicContainer = document.querySelector('.dynamic-container');
 const modifyDom = document.querySelector('.modify-btns');
+const updateBtn = document.querySelector('.update-btn');
 
 const adId = window.location.href.split('?')[1].split('=')[1];
 
@@ -50,7 +51,7 @@ const start = async () => {
         if(userData.user._id == resData.owner._id){
             dynamicContainer.innerHTML = `<button type="button" class="btn btn-primary btn-lg">Start Auction</button>`;
             modifyDom.innerHTML = `
-            <button type="button" class="update-btn btn btn-primary ">Update</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal">Update</button>
             <button type="button" class="delete-btn btn btn-danger">Delete</button>`;
 
             const deleteBtn = document.querySelector('.delete-btn');
@@ -80,3 +81,25 @@ const removeAd = async()=>{
         location.href = '/Client/homePage/home.html';
     }
 }
+
+updateBtn.addEventListener('click',async()=>{
+    const updatedPrice = document.getElementById('InputPrice').value;
+    const body = {
+        basePrice: updatedPrice
+    };
+    console.log('fuck dani');
+    const res = await fetch(`http://localhost:4444/ad/${adId}`,{
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: {
+            'x-auth-token': localStorage.getItem('token'),
+            'Content-Type': 'application/json'
+        }
+    });
+    const resData = await res.json();
+    if (res.status >= 400) {
+        alert(resData.errors[0].msg);
+    } else {
+        location.reload();
+    }
+})

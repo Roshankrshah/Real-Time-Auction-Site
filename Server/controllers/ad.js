@@ -119,7 +119,7 @@ const updateAd = async(req,res)=>{
         if(req.body.basePrice){
             req.body.currentPrice = req.body.basePrice;
         }
-
+               
         let updatedAd = await Ad.findByIdAndUpdate(adId,req.body);
         updatedAd = await Ad.findById(adId);
 
