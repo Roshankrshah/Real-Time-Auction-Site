@@ -1,0 +1,17 @@
+.product-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    margin: 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+.product-image {
+    flex-basis: 50%;
+}
+.product-details {
+    flex-basis: 50%;
+    margin-left: 10px;
+}

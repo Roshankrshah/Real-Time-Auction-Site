@@ -25,7 +25,7 @@ const start = async () => {
               <p class="card-text">Status: ${ad.auctionStarted === false ?
                     'Upcoming' : ad.auctionEnded === false ?
                         'Ingoing' : 'Completed'}</p>
-              <a href="#" class="btn btn-primary">See Details</a>
+              <a href="./adDetail.html?adId=${ad._id}" class="btn btn-primary">See Details</a>
             </div>
           </div>
             `
