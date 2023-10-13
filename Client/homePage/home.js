@@ -38,7 +38,22 @@ const start = async () => {
 start();
 
 socket.on('addAd', (newAd) => {
-    appendAlert('Some new Ads are Available','info')
+    appendAlert('Some new Ads are Available','info');
+    console.log(newAd);
+    const newCreatedAd = document.createElement('div');
+    newCreatedAd.classList.add('card');
+    newCreatedAd.style.width = '25rem';
+    newCreatedAd.style.height = '25rem';
+    newCreatedAd.innerHTML = `
+            <img src="${newAd.image}" class="card-img-top" alt="image">
+            <div class="card-body">
+              <h5 class="card-title">${newAd.ad.productName}</h5>
+              <p class="card-text">Price: ₹ ${newAd.ad.basePrice.$numberDecimal}</p>
+              <p class="card-text">Status: 'Upcoming'</p>
+              <a href="#" class="btn btn-primary">See Details</a>
+            </div>`;
+    adsContainer.insertBefore(newCreatedAd,adsContainer.firstChild);
+
 });
 
 const appendAlert = (message, type) => {
