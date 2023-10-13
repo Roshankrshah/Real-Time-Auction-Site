@@ -50,15 +50,33 @@ const start = async () => {
         if(userData.user._id == resData.owner._id){
             dynamicContainer.innerHTML = `<button type="button" class="btn btn-primary btn-lg">Start Auction</button>`;
             modifyDom.innerHTML = `
-            <button type="button" class="btn btn-primary ">Update</button>
-            <button type="button" class="btn btn-danger">Delete</button>`;
+            <button type="button" class="update-btn btn btn-primary ">Update</button>
+            <button type="button" class="delete-btn btn btn-danger">Delete</button>`;
+
+            const deleteBtn = document.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click',removeAd)
         }else{
             dynamicContainer.innerHTML = `
             <input type="number" class="input-field" placeholder="Enter the price(₹)">
             <button type="button" class="btn btn-primary">Placed Bid</button>`;
         }
     }
-
 }
 
 start();
+
+const removeAd = async()=>{
+    const res = await fetch(`http://localhost:4444/ad/${adId}`,{
+        method: 'DELETE',
+        headers: {
+            'x-auth-token': localStorage.getItem('token')
+        }
+    });
+    const resData = await res.json();
+    if (res.status >= 400) {
+        alert(resData.errors[0].msg);
+    } else {
+        alert(resData.msg);
+        location.href = '/Client/homePage/home.html';
+    }
+}
