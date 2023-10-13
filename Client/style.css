@@ -91,4 +91,8 @@ h1 {
     height: 50%;
 }
 
+.single-ad{
+    cursor: pointer;
+}
+
 .Ads-container div .card-body {}

@@ -65,6 +65,8 @@ const start = async () => {
 
                 for(let j=0;j<3 && r != 0 ;j++){
                     const divEle = document.createElement('div');
+                    divEle.classList.add('single-ad');
+                    divEle.setAttribute('data-id',`${postAdsData[i+j]._id}`)
                     divEle.innerHTML = `
                     <p><strong>${postAdsData[i+j].productName}</strong></p>
                     <p>Price: ₹ ${postAdsData[i+j].basePrice.$numberDecimal}</p>
@@ -77,10 +79,18 @@ const start = async () => {
                 }
                 carouselItem.appendChild(divContainer);
                 carouselInner.appendChild(carouselItem);
+                const EveryAds = document.querySelectorAll('.single-ad');
+                EveryAds.forEach((singleAd)=>{
+                    singleAd.addEventListener('click',viewDetail);
+                })
             }
         }
     }
 
+}
+
+const viewDetail = async(e)=>{
+    location.href = `../homePage/adDetail.html?adId=${e.currentTarget.dataset.id}`;
 }
 
 logoutBtn.addEventListener('click', () => {
