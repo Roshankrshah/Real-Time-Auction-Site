@@ -3,6 +3,7 @@ const productDetailDom = document.querySelector('.product-details');
 const dynamicContainer = document.querySelector('.dynamic-container');
 const modifyDom = document.querySelector('.modify-btns');
 const updateBtn = document.querySelector('.update-btn');
+const logoutBtn = document.querySelector('.logout-btn');
 
 const adId = window.location.href.split('?')[1].split('=')[1];
 
@@ -103,3 +104,8 @@ updateBtn.addEventListener('click',async()=>{
         location.reload();
     }
 })
+
+logoutBtn.addEventListener('click',()=>{
+    localStorage.clear();
+    location.href = '/Client/index.html';
+});
