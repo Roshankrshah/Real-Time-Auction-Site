@@ -5,9 +5,7 @@ let io, adIo;
 exports.init = (server) => {
     io = new Server(server, {
         cors: {
-            origin: process.env.CLIENT_BASE_URL,
-            methods: ['*'],
-            allowedHeaders: ['*'],
+            origin: '*',
         },
     })
     return io;
@@ -36,5 +34,5 @@ exports.getAdIo = ()=>{
     if(!adIo){
         throw new Error('Socket.io not initialized');
     }
-    return Io;
+    return adIo;
 }

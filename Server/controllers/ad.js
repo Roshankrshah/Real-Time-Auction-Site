@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 const Ad = require('../models/Ad');
 const User = require('../models/User');
 const Room = require('../models/Room');
+const io = require('../socket');
 
 const addAd = async (req, res) => {
     const errors = validationResult(req);
@@ -43,7 +44,7 @@ const addAd = async (req, res) => {
         user.postedAds.push(ad._id);
         await user.save();
 
-        //socket
+        io.getIo().emit('addAd',{action: 'add', ad:ad});
 
         res.status(200).json({ ad });
     } catch (error) {

@@ -1,7 +1,10 @@
 const adsContainer = document.querySelector('.Ads-container');
 const logoutBtn = document.querySelector('.logout-btn');
+const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 
-const start = async()=>{
+const socket = io('http://localhost:4444');
+
+const start = async () => {
     const res = await fetch(`http://localhost:4444/ad`, {
         headers: {
             'x-auth-token': localStorage.getItem('token')
@@ -19,9 +22,9 @@ const start = async()=>{
             <div class="card-body">
               <h5 class="card-title">${ad.productName}</h5>
               <p class="card-text">Price: ₹ ${ad.basePrice.$numberDecimal}</p>
-              <p class="card-text">Status: ${ad.auctionStarted === false ? 
-                'Upcoming' : ad.auctionEnded === false ? 
-                'Ingoing' : 'Completed'}</p>
+              <p class="card-text">Status: ${ad.auctionStarted === false ?
+                    'Upcoming' : ad.auctionEnded === false ?
+                        'Ingoing' : 'Completed'}</p>
               <a href="#" class="btn btn-primary">See Details</a>
             </div>
           </div>
@@ -33,6 +36,23 @@ const start = async()=>{
 }
 
 start();
+
+socket.on('addAd', (newAd) => {
+    appendAlert('Some new Ads are Available','info')
+});
+
+const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div')
+    wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+    ].join('')
+
+    alertPlaceholder.append(wrapper)
+}
+
 
 logoutBtn.addEventListener('click', () => {
     localStorage.clear();
