@@ -10,8 +10,8 @@ const startAuction = async(req,res)=>{
         let ad = await Ad.findById(adId).populate('owner',{password:0});
 
         if(!ad) return res.status(404).json({errors: [{msg: 'Ad not found'}]});
-
-        if(ad.owner._id != req.user._id)
+        
+        if(ad.owner._id != req.user.id)
             return res.status(400).json({errors: [{msg: 'Unauthorized to start'}]});
 
         if(ad.auctionEnded){
@@ -24,6 +24,7 @@ const startAuction = async(req,res)=>{
         ad.auctionStarted = true;
 
         await ad.save();
+        
 
         io.getAdIo()
             .to(ad._id.toString())

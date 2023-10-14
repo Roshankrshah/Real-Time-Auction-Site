@@ -59,7 +59,8 @@ io.on('connection',(socket)=>{
 });
 
 adIo.on('connect',(socket)=>{
-    socket.on('joinAd',({ad})=>{
+    console.log('connected');
+    socket.on('joinAd',(ad)=>{
         socket.join(ad.toString());
     });
     socket.on('leaveAd',({ad})=>{
