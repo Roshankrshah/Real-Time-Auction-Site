@@ -11,7 +11,8 @@ const user = require('./routes/user');
 const ad = require('./routes/ad');
 const upload = require('./routes/upload');
 const room = require('./routes/room');
-const auction = require('./routes/auction')
+const auction = require('./routes/auction');
+const bid = require('./routes/bid');
 
 const app = express();
 const server = createServer(app);
@@ -44,6 +45,7 @@ app.use('/ad',ad);
 app.use('/upload',upload);
 app.use('/room',room);
 app.use('/auction',auction);
+app.use('/bid',bid);
 
 const PORT = process.env.PORT || 4444;
 
