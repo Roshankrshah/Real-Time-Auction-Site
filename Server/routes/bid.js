@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const isAuth = require('../middlewares/isAuth');
-const {listBids} = require('../controllers/bid');
+const { listBids, addBid } = require('../controllers/bid');
 
 
-router.get('/:adId?',isAuth,listBids);
+router.post(':adId?', isAuth, addBid);
+router.get('/:adId?', isAuth, listBids);
 
 module.exports = router;

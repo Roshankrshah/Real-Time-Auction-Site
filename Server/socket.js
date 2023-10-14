@@ -14,9 +14,7 @@ exports.init = (server) => {
 exports.initAdIo = (server,path = '/socket/adpage')=>{
     adIo = new Server(server,{
         cors: {
-            origin: process.env.CLIENT_BASE_URL,
-            methods: ['*'],
-            allowedHeaders: ['*'],
+            origin: '*',
         },
         path: path
     });
