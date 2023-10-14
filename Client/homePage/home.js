@@ -50,7 +50,7 @@ socket.on('addAd', (newAd) => {
               <h5 class="card-title">${newAd.ad.productName}</h5>
               <p class="card-text">Price: ₹ ${newAd.ad.basePrice.$numberDecimal}</p>
               <p class="card-text">Status: 'Upcoming'</p>
-              <a href="#" class="btn btn-primary">See Details</a>
+              <a href="./adDetail.html?adId=${newAd.ad._id}" class="btn btn-primary">See Details</a>
             </div>`;
     adsContainer.insertBefore(newCreatedAd,adsContainer.firstChild);
 

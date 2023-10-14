@@ -5,7 +5,18 @@ const modifyDom = document.querySelector('.modify-btns');
 const updateBtn = document.querySelector('.update-btn');
 const logoutBtn = document.querySelector('.logout-btn');
 
+const socket = io('http://localhost:4444',{
+    path: '/socket/adpage'
+});
+
+
+socket.on('auctionStarted',(data)=>{
+    alert('Auction Now Started');
+})
+
+
 const adId = window.location.href.split('?')[1].split('=')[1];
+let roomId;
 
 console.log(adId);
 
@@ -21,6 +32,7 @@ const start = async () => {
         alert(resData.errors[0].msg);
     } else {
         console.log(resData);
+        roomId = resData.room;
         productImageDom.innerHTML = `
         <h2>${resData.productName}</h2>
         <img src="${resData.image}" alt="Product Image">`;
@@ -32,7 +44,7 @@ const start = async () => {
         <br> Base Price: ₹ ${resData.basePrice.$numberDecimal}</p>
         <p><strong> Auction</strong><br>
         Status: ${resData.auctionStarted === false ?
-                'Upcoming' : ad.auctionEnded === false ?
+                'Upcoming' : resData.auctionEnded === false ?
                     'Ingoing' : 'Completed'}
         <br>Bids: ${resData.bids.length}
         <br>Time remaining: 
@@ -49,26 +61,52 @@ const start = async () => {
     if (user.status >= 400) {
         alert(userData.errors[0].msg);
     } else {
-        if(userData.user._id == resData.owner._id){
-            dynamicContainer.innerHTML = `<button type="button" class="btn btn-primary btn-lg">Start Auction</button>`;
+        if (userData.user._id == resData.owner._id) {
+            dynamicContainer.innerHTML = `<button type="button" class="start-btn btn btn-primary btn-lg">Start Auction</button>`;
             modifyDom.innerHTML = `
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal">Update</button>
             <button type="button" class="delete-btn btn btn-danger">Delete</button>`;
 
             const deleteBtn = document.querySelector('.delete-btn');
-            deleteBtn.addEventListener('click',removeAd)
-        }else{
-            dynamicContainer.innerHTML = `
-            <input type="number" class="input-field" placeholder="Enter the price(₹)">
-            <button type="button" class="btn btn-primary">Placed Bid</button>`;
+            deleteBtn.addEventListener('click', removeAd);
+
+            const startBtn = document.querySelector('.start-btn');
+            startBtn.addEventListener('click',startAuction);
+        } else {
+            const roomDetail = await fetch(`http://localhost:4444/room/${resData.room}`, {
+                headers: {
+                    'x-auth-token': localStorage.getItem('token')
+                }
+            });
+            const roomData = await roomDetail.json();
+            console.log(roomData);
+            let userInRoom = false;
+            roomData.users.forEach(user => {
+                console.log('1',user._id,userData.user._id)
+                if (user._id == userData.user._id) {
+                    userInRoom = true;
+                }
+            });
+            if (userInRoom) {
+                dynamicContainer.innerHTML = `
+                    <input type="number" class="input-field" placeholder="Enter the price(₹)">
+                    <button type="button" class="btn btn-primary">Placed Bid</button>`;
+            } else {
+                dynamicContainer.innerHTML = `
+                    <button type="button" class="join-btn btn btn-primary btn-lg">Join Auction</button>`;
+
+                const joinBtn = document.querySelector('.join-btn');
+                joinBtn.addEventListener('click', joinAuction);
+            }
+
         }
     }
 }
 
 start();
 
-const removeAd = async()=>{
-    const res = await fetch(`http://localhost:4444/ad/${adId}`,{
+const removeAd = async () => {
+    const res = await fetch(`http://localhost:4444/ad/${adId}`, {
         method: 'DELETE',
         headers: {
             'x-auth-token': localStorage.getItem('token')
@@ -83,13 +121,13 @@ const removeAd = async()=>{
     }
 }
 
-updateBtn.addEventListener('click',async()=>{
+updateBtn.addEventListener('click', async () => {
     const updatedPrice = document.getElementById('InputPrice').value;
     const body = {
         basePrice: updatedPrice
     };
     console.log('fuck dani');
-    const res = await fetch(`http://localhost:4444/ad/${adId}`,{
+    const res = await fetch(`http://localhost:4444/ad/${adId}`, {
         method: 'PUT',
         body: JSON.stringify(body),
         headers: {
@@ -105,7 +143,41 @@ updateBtn.addEventListener('click',async()=>{
     }
 })
 
-logoutBtn.addEventListener('click',()=>{
+const joinAuction = async()=>{
+    console.log(roomId)
+    const res = await fetch(`http://localhost:4444/room/join/${roomId}`,{
+        method: 'POST',
+        headers: {
+            'x-auth-token': localStorage.getItem('token')
+        }
+    });
+    const resData = await res.json();
+    if (res.status >= 400) {
+        alert(resData.errors[0].msg);
+    } else {
+        console.log(resData);
+        //location.reload();
+        socket.emit('joinAd',(adId));
+    }
+    
+}
+
+const startAuction = async()=>{
+    const res = await fetch(`http://localhost:4444/auction/start/${adId}`,{
+        headers: {
+            'x-auth-token': localStorage.getItem('token')
+        }
+    })
+    const resData = await res.json();
+    if (res.status >= 400) {
+        alert(resData.errors[0].msg);
+    } else {
+        console.log(resData);
+    }
+}
+
+
+logoutBtn.addEventListener('click', () => {
     localStorage.clear();
     location.href = '/Client/index.html';
 });
