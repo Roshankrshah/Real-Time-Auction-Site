@@ -3,6 +3,7 @@ const postAdsContainer = document.querySelector('.postAd-crousel');
 const logoutBtn = document.querySelector('.logout-btn');
 const carouselDOM = document.querySelector('.carousel-indicators');
 const carouselInner = document.querySelector('.carousel-inner');
+const purchasedDom = document.querySelector('.purchased-items');
 
 const start = async () => {
     const res = await fetch(`http://localhost:4444/auth`, {
@@ -29,7 +30,7 @@ const start = async () => {
         }
     });
     const postAdsData = await postAds.json();
-    if (res.status >= 400) {
+    if (postAds.status >= 400) {
         alert(postAdsData.errors[0].msg);
     } else {
         console.log(postAdsData);
@@ -87,6 +88,32 @@ const start = async () => {
         }
     }
 
+    const purchasedItem  = await fetch('http://localhost:4444/user/products/purchased',{
+        headers: {
+            'x-auth-token': localStorage.getItem('token')
+        }
+    });
+    const purchasedData = await purchasedItem.json();
+
+    if (purchasedItem.status >= 400) {
+        alert(purchasedData.errors[0].msg);
+    } else {
+        if(purchasedData.length === 0){
+            purchasedDom.innerHTML = `<p>No purchased product available</p>`;
+        }else{
+            console.log(purchasedData)
+            purchasedData.forEach(item => {
+                purchasedDom.innerHTML += `
+                <tr>
+                    <td>${item.productName}</td>
+                    <td>${item.currentPrice.$numberDecimal}</td>
+                    <td>${new Date(item.updatedAt).toLocaleString()}</td>
+                </tr>
+                `
+            })
+            
+        }
+    }
 }
 
 const viewDetail = async(e)=>{
