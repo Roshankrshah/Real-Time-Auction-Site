@@ -24,7 +24,6 @@ const startAuction = async(req,res)=>{
         ad.auctionStarted = true;
 
         await ad.save();
-        
 
         io.getAdIo()
             .to(ad._id.toString())
@@ -77,7 +76,7 @@ const startAuction = async(req,res)=>{
 
                 await auctionEndAd.save();
             }
-        }, (duration+1)*100);
+        }, (duration+1)*1000);
     } catch (error) {
         console.log(error);
         res.status(500).json({ errors: [{ msg: 'Server error' }] });

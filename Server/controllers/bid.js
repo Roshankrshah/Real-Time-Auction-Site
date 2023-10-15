@@ -9,7 +9,7 @@ const addBid = async (req, res) => {
         const ad = await Ad.findById(adId).populate('owner', { password: 0 });
         if (!ad) return res.status(404).json({ errors: [{ msg: 'Ad not found' }] });
 
-        if (!parseFloat(ad.currentPrice) >= parseFloat(amount)) {
+        if (parseFloat(ad.currentPrice) >= parseFloat(amount)) {
             return res.status(400).json({ errors: [{ msg: 'Bid amount less than existing price' }] });
         }
 
@@ -22,7 +22,7 @@ const addBid = async (req, res) => {
         ad.currentBidder = req.user.id;
 
         const savedAd = await ad.save();
-
+        
         io.getAdIo().to(ad._id.toString()).emit('bidPosted', { action: 'post', data: ad });
 
         res.status(200).json(savedAd);
