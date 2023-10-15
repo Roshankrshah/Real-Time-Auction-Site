@@ -24,8 +24,12 @@ socket.on('timer', (data) => {
 
 socket.on('auctionEnded', (data) => {
     alert('auction ended');
-    alert(`Winner is ${data.winner.username}`)
-    console.log('auctionEnded',data);
+    if (data.action == 'sold') {
+        alert(`Winner is ${data.winner.username}`)
+    } else {
+        alert('Item Remain Unsold');
+    }
+    console.log('auctionEnded', data);
 })
 
 socket.on('bidPosted', (data) => {
@@ -37,7 +41,7 @@ socket.on('bidPosted', (data) => {
 
 
 const adId = window.location.href.split('?')[1].split('=')[1];
-let roomId, bidPrice, inputBid,duration, bidLen = 0,statusValue= 'Not Started Yet';
+let roomId, bidPrice, inputBid, startBtn, duration, bidLen = 0, statusValue = 'Not Started Yet';
 
 console.log(adId);
 
@@ -122,16 +126,6 @@ const start = async () => {
             }
 
         }
-
-        /*
-                <p><strong> Auction</strong><br>
-                Status: ${resData.auctionStarted === false ?
-                        'Upcoming' : resData.auctionEnded === false ?
-                            'Ingoing' : 'Completed'}
-                <br>Bids: ${resData.bids.length}
-                <br>Time remaining: 
-                <br>Current Price: ₹ ${resData.currentPrice.$numberDecimal}
-                <br> Current Bidder: </p>`*/
     }
 
     const user = await fetch(`http://localhost:4444/auth`, {
@@ -144,16 +138,18 @@ const start = async () => {
         alert(userData.errors[0].msg);
     } else {
         if (userData.user._id == resData.owner._id) {
-            dynamicContainer.innerHTML = `<button type="button" class="start-btn btn btn-primary btn-lg">Start Auction</button>`;
-            modifyDom.innerHTML = `
+            if (!resData.sold) {
+                dynamicContainer.innerHTML = `<button type="button" class="start-btn btn btn-primary btn-lg">Start Auction</button>`;
+                modifyDom.innerHTML = `
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal">Update</button>
             <button type="button" class="delete-btn btn btn-danger">Delete</button>`;
 
-            const deleteBtn = document.querySelector('.delete-btn');
-            deleteBtn.addEventListener('click', removeAd);
+                const deleteBtn = document.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', removeAd);
 
-            const startBtn = document.querySelector('.start-btn');
-            startBtn.addEventListener('click', startAuction);
+                startBtn = document.querySelector('.start-btn');
+                startBtn.addEventListener('click', startAuction);
+            }
         } else {
             const roomDetail = await fetch(`http://localhost:4444/room/${resData.room}`, {
                 headers: {
@@ -169,14 +165,9 @@ const start = async () => {
                     userInRoom = true;
                 }
             });
-            if (userInRoom) {
-                dynamicContainer.innerHTML = `
-                    <input type="number" class="input-field" placeholder="Enter the price(₹)">
-                    <button type="button" class="btn btn-primary">Placed Bid</button>`;
-            } else {
+            if (!userInRoom) {
                 dynamicContainer.innerHTML = `
                     <button type="button" class="join-btn btn btn-primary btn-lg">Join Auction</button>`;
-
                 const joinBtn = document.querySelector('.join-btn');
                 joinBtn.addEventListener('click', joinAuction);
             }
@@ -299,6 +290,8 @@ const startAuction = async () => {
         alert(resData.errors[0].msg);
     } else {
         console.log(resData);
+        modifyDom.innerHTML = '';
+        startBtn.setAttribute('disabled', '');
         /*statusContainer.innerHTML = `
             <p><strong>Auction Details</strong></p>
             <table>
