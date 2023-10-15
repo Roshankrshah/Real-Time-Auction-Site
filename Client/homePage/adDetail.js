@@ -1,40 +1,43 @@
 const productImageDom = document.querySelector('.product-image');
 const productDetailDom = document.querySelector('.product-details');
 const dynamicContainer = document.querySelector('.dynamic-container');
+const statusContainer = document.querySelector('.status-container');
 const modifyDom = document.querySelector('.modify-btns');
 const updateBtn = document.querySelector('.update-btn');
 const logoutBtn = document.querySelector('.logout-btn');
-const timer = document.querySelector('.timer');
-const price = document.querySelector('.price');
-const bidder = document.querySelector('.bidder');
 
-const socket = io('http://localhost:4444',{
+let status, noOfBids, timer, price, bidder;
+
+const socket = io('http://localhost:4444', {
     path: '/socket/adpage'
 });
 
 
-socket.on('auctionStarted',(data)=>{
+socket.on('auctionStarted', (data) => {
     alert('Auction Now Started');
+    status.innerText = 'Ingoing';
 });
 
-socket.on('timer',(data)=>{
+socket.on('timer', (data) => {
     timer.innerText = data.data.timer;
 });
 
-socket.on('auctionEnded',(data)=>{
-    alert('auction ended',data.action);
-    alert('Winner', data.winner);
+socket.on('auctionEnded', (data) => {
+    alert('auction ended');
+    alert(`Winner is ${data.winner.username}`)
+    console.log('auctionEnded',data);
 })
 
-socket.on('bidPosted',(data)=>{
-    console.log('bid',data.data);
+socket.on('bidPosted', (data) => {
+    console.log('bid', data.data);
+    noOfBids.innerText = data.data.bids.length;
     price.innerText = data.data.currentPrice.$numberDecimal;
-    bidder.innerHTML =data.data.currentBidder;
+    bidder.innerHTML = data.data.currentBidder;
 })
 
 
 const adId = window.location.href.split('?')[1].split('=')[1];
-let roomId,bidPrice,inputBid;
+let roomId, bidPrice, inputBid,duration, bidLen = 0,statusValue= 'Not Started Yet';
 
 console.log(adId);
 
@@ -59,15 +62,76 @@ const start = async () => {
         <p><strong>Description</strong><br> ${resData.description}</p>
         <p><strong>Info</strong><br> Posted on: ${new Date(resData.updatedAt).toLocaleString()}
         <br> Seller: ${resData.owner.username}
-        <br> Base Price: ₹ ${resData.basePrice.$numberDecimal}</p>
-        <p><strong> Auction</strong><br>
-        Status: ${resData.auctionStarted === false ?
-                'Upcoming' : resData.auctionEnded === false ?
-                    'Ingoing' : 'Completed'}
-        <br>Bids: ${resData.bids.length}
-        <br>Time remaining: 
-        <br>Current Price: ₹ ${resData.currentPrice.$numberDecimal}
-        <br> Current Bidder: </p>`
+        <br> Base Price: ₹ ${resData.basePrice.$numberDecimal}</p>`;
+
+        if (!resData.auctionStarted) {
+            duration = resData.duration;
+            statusContainer.innerHTML += `
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th>Duration (seconds)</th>
+                    <th>Base Price</th>
+                </tr>
+                <tr>
+                    <td class="status">Upcoming</td>
+                    <td class="timer">${resData.duration}</td>
+                    <td class="price">${resData.basePrice.$numberDecimal}</td>
+                </tr>
+            </table>`;
+
+        } else if (!resData.auctionEnded) {
+            bidLen = resData.bids.length;
+            statusValue = 'Ingoing';
+            statusContainer.innerHTML += `
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th>No. of Bids</th>
+                    <th>Time Left (seconds)</th>
+                    <th>Base Price</th>
+                    <th>Current Bidder</th>
+                </tr>
+                <tr>
+                    <td class="status">InGoing</td>
+                    <td class="noOfBids">${resData.bids.length}</td>
+                    <td class="timer">${resData.timer}</td>
+                    <td class="price">${resData.currentPrice.$numberDecimal}</td>
+                    <td class="bidder">${resData.currentBidder}</td>
+                </tr>
+            </table>`;
+        } else {
+            if (resData.sold) {
+                statusContainer.innerHTML += `
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th>No. of Bids</th>
+                    <th>Sold Price</th>
+                    <th>Winner Bidder</th>
+                </tr>
+                <tr>
+                    <td class="status">Completed(Sold)</td>
+                    <td class="noOfBids">${resData.bids.length}</td>
+                    <td class="price">${resData.currentPrice.$numberDecimal}</td>
+                    <td class="bidder">${resData.purchasedBy ? resData.purchasedBy : ''}</td>
+                </tr>
+            </table>`;
+            } else {
+                statusContainer.innerHTML += 'Product Unsold'
+            }
+
+        }
+
+        /*
+                <p><strong> Auction</strong><br>
+                Status: ${resData.auctionStarted === false ?
+                        'Upcoming' : resData.auctionEnded === false ?
+                            'Ingoing' : 'Completed'}
+                <br>Bids: ${resData.bids.length}
+                <br>Time remaining: 
+                <br>Current Price: ₹ ${resData.currentPrice.$numberDecimal}
+                <br> Current Bidder: </p>`*/
     }
 
     const user = await fetch(`http://localhost:4444/auth`, {
@@ -89,7 +153,7 @@ const start = async () => {
             deleteBtn.addEventListener('click', removeAd);
 
             const startBtn = document.querySelector('.start-btn');
-            startBtn.addEventListener('click',startAuction);
+            startBtn.addEventListener('click', startAuction);
         } else {
             const roomDetail = await fetch(`http://localhost:4444/room/${resData.room}`, {
                 headers: {
@@ -100,7 +164,7 @@ const start = async () => {
             console.log(roomData);
             let userInRoom = false;
             roomData.users.forEach(user => {
-                console.log('1',user._id,userData.user._id)
+                console.log('1', user._id, userData.user._id)
                 if (user._id == userData.user._id) {
                     userInRoom = true;
                 }
@@ -161,9 +225,9 @@ updateBtn.addEventListener('click', async () => {
     }
 })
 
-const joinAuction = async()=>{
+const joinAuction = async () => {
     console.log(roomId)
-    const res = await fetch(`http://localhost:4444/room/join/${roomId}`,{
+    const res = await fetch(`http://localhost:4444/room/join/${roomId}`, {
         method: 'POST',
         headers: {
             'x-auth-token': localStorage.getItem('token')
@@ -178,17 +242,42 @@ const joinAuction = async()=>{
                     <input type="number" class="input-bid" placeholder="Enter the price(₹)">
                     <button type="button" class="bid-btn btn btn-primary">Placed Bid</button>`;
         //location.reload();
-        socket.emit('joinAd',(adId));
+        socket.emit('joinAd', (adId));
+        statusContainer.innerHTML = `
+            <p><strong>Auction Details</strong></p>
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th>No. of Bids</th>
+                    <th>Time Left (seconds)</th>
+                    <th>Current Price</th>
+                    <th>Current Bidder</th>
+                </tr>
+                <tr>
+                    <td class="status">${statusValue}</td>
+                    <td class="noOfBids">${bidLen}</td>
+                    <td class="timer">${duration}</td>
+                    <td class="price"></td>
+                    <td class="bidder"></td>
+                </tr>
+            </table>`;
+
         const bidBtn = document.querySelector('.bid-btn');
+        status = document.querySelector('.status');
+        noOfBids = document.querySelector('.noOfBids');
+        timer = document.querySelector('.timer');
+        price = document.querySelector('.price');
+        bidder = document.querySelector('.bidder');
+
         inputBid = document.querySelector('.input-bid');
-        bidBtn.addEventListener('click',placedBid);
+        bidBtn.addEventListener('click', placedBid);
     }
-    
+
 }
 
-const placedBid = async()=>{
-    bidPrice  = inputBid.value;
-    const res = await fetch(`http://localhost:4444/bid/${adId}?amount=${bidPrice}`,{
+const placedBid = async () => {
+    bidPrice = inputBid.value;
+    const res = await fetch(`http://localhost:4444/bid/${adId}?amount=${bidPrice}`, {
         method: 'POST',
         headers: {
             'x-auth-token': localStorage.getItem('token')
@@ -199,8 +288,8 @@ const placedBid = async()=>{
     console.log(resData);
 }
 
-const startAuction = async()=>{
-    const res = await fetch(`http://localhost:4444/auction/start/${adId}`,{
+const startAuction = async () => {
+    const res = await fetch(`http://localhost:4444/auction/start/${adId}`, {
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
@@ -210,6 +299,24 @@ const startAuction = async()=>{
         alert(resData.errors[0].msg);
     } else {
         console.log(resData);
+        /*statusContainer.innerHTML = `
+            <p><strong>Auction Details</strong></p>
+            <table>
+                <tr>
+                    <th>Status</th>
+                    <th>No. of Bids</th>
+                    <th>Time Left (seconds)</th>
+                    <th>Base Price</th>
+                    <th>Current Bidder</th>
+                </tr>
+                <tr>
+                    <td class="status">Ingoing</td>
+                    <td class="noOfBids">0</td>
+                    <td class="timer"></td>
+                    <td class="price"></td>
+                    <td class="bidder"></td>
+                </tr>
+            </table>`;*/
     }
 }
 

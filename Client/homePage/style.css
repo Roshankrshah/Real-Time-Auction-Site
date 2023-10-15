@@ -24,3 +24,35 @@
     flex-grow: 1;
     margin-bottom: 2px;
 }
+
+.status-container {
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    margin: 50px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 10px 50px 20px 50px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+tr:hover{
+    background-color: azure;
+}
