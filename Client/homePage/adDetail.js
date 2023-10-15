@@ -4,6 +4,9 @@ const dynamicContainer = document.querySelector('.dynamic-container');
 const modifyDom = document.querySelector('.modify-btns');
 const updateBtn = document.querySelector('.update-btn');
 const logoutBtn = document.querySelector('.logout-btn');
+const timer = document.querySelector('.timer');
+const price = document.querySelector('.price');
+const bidder = document.querySelector('.bidder');
 
 const socket = io('http://localhost:4444',{
     path: '/socket/adpage'
@@ -12,11 +15,26 @@ const socket = io('http://localhost:4444',{
 
 socket.on('auctionStarted',(data)=>{
     alert('Auction Now Started');
+});
+
+socket.on('timer',(data)=>{
+    timer.innerText = data.data.timer;
+});
+
+socket.on('auctionEnded',(data)=>{
+    alert('auction ended',data.action);
+    alert('Winner', data.winner);
+})
+
+socket.on('bidPosted',(data)=>{
+    console.log('bid',data.data);
+    price.innerText = data.data.currentPrice.$numberDecimal;
+    bidder.innerHTML =data.data.currentBidder;
 })
 
 
 const adId = window.location.href.split('?')[1].split('=')[1];
-let roomId;
+let roomId,bidPrice,inputBid;
 
 console.log(adId);
 
@@ -156,10 +174,29 @@ const joinAuction = async()=>{
         alert(resData.errors[0].msg);
     } else {
         console.log(resData);
+        dynamicContainer.innerHTML = `
+                    <input type="number" class="input-bid" placeholder="Enter the price(₹)">
+                    <button type="button" class="bid-btn btn btn-primary">Placed Bid</button>`;
         //location.reload();
         socket.emit('joinAd',(adId));
+        const bidBtn = document.querySelector('.bid-btn');
+        inputBid = document.querySelector('.input-bid');
+        bidBtn.addEventListener('click',placedBid);
     }
     
+}
+
+const placedBid = async()=>{
+    bidPrice  = inputBid.value;
+    const res = await fetch(`http://localhost:4444/bid/${adId}?amount=${bidPrice}`,{
+        method: 'POST',
+        headers: {
+            'x-auth-token': localStorage.getItem('token')
+        }
+    })
+
+    const resData = await res.json();
+    console.log(resData);
 }
 
 const startAuction = async()=>{
