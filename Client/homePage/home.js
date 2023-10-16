@@ -45,7 +45,7 @@ socket.on('addAd', (newAd) => {
     newCreatedAd.style.width = '25rem';
     newCreatedAd.style.height = '25rem';
     newCreatedAd.innerHTML = `
-            <img src="${newAd.image}" class="card-img-top" alt="image">
+            <img src="${newAd.ad.image}" class="card-img-top" alt="image">
             <div class="card-body">
               <h5 class="card-title">${newAd.ad.productName}</h5>
               <p class="card-text">Price: ₹ ${newAd.ad.basePrice.$numberDecimal}</p>

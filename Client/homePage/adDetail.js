@@ -30,7 +30,8 @@ socket.on('auctionEnded', async(data) => {
     //alert('auction ended');
     if (data.action == 'sold') {
         //alert(`Winner is ${data.winner.username}`)
-        const winner = await fetchUser(data.data.currentBidder);
+        console.log('Ended',data);
+        const winner = data.winner.username;
         appendAlert(`Auction Ended and Winner is ${winner}`,'success');
     } else {
         //alert('Item Remain Unsold');
@@ -127,7 +128,7 @@ const start = async () => {
                     <td class="status">Completed(Sold)</td>
                     <td class="noOfBids">${resData.bids.length}</td>
                     <td class="price">${resData.currentPrice.$numberDecimal}</td>
-                    <td class="bidder">${resData.purchasedBy ? resData.purchasedBy : ''}</td>
+                    <td class="bidder">${resData.purchasedBy ? await fetchUser(resData.purchasedBy) : ''}</td>
                 </tr>
             </table>`;
             } else {

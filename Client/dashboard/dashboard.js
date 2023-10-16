@@ -19,8 +19,8 @@ const start = async () => {
         userDetails.innerHTML = `
         <p><strong>Name:</strong> ${resData.user.username}</p>
         <p><strong>Email:</strong> ${resData.user.email}</p>
-        <p><strong>Phone:</strong> ${resData.user.phone ? resData.phone : ''}</p>
-        <p><strong>Address:</strong> ${resData.user.address ? resData.address : ''}</p>
+        <p><strong>Phone:</strong> ${resData.user.phone ? resData.user.phone : ''}</p>
+        <p><strong>Address:</strong> ${resData.user.address ? resData.user.address : ''}</p>
         `;
     }
 
@@ -39,7 +39,7 @@ const start = async () => {
         if(totalAds === 0){
             postAdsContainer.innerHTML = `<p>No ads posted</p>`;
         }else{
-            let noOfIndicator = Math.ceil(totalAds/4);
+            let noOfIndicator = Math.ceil(totalAds/3);
             console.log(noOfIndicator);
 
             for(let i=0; i<noOfIndicator;i++){
@@ -67,12 +67,12 @@ const start = async () => {
                 for(let j=0;j<3 && r != 0 ;j++){
                     const divEle = document.createElement('div');
                     divEle.classList.add('single-ad');
-                    divEle.setAttribute('data-id',`${postAdsData[i+j]._id}`)
+                    divEle.setAttribute('data-id',`${postAdsData[(i*3)+j]._id}`)
                     divEle.innerHTML = `
-                    <p><strong>${postAdsData[i+j].productName}</strong></p>
-                    <p>Price: ₹ ${postAdsData[i+j].basePrice.$numberDecimal}</p>
-                    <p>Status: ${postAdsData[i+j].auctionStarted === false ? 
-                        'Upcoming' : postAdsData[i+j].auctionEnded === false ? 
+                    <p><strong>${postAdsData[(i*3)+j].productName}</strong></p>
+                    <p>Price: ₹ ${postAdsData[(i*3)+j].basePrice.$numberDecimal}</p>
+                    <p>Status: ${postAdsData[(i*3)+j].auctionStarted === false ? 
+                        'Upcoming' : postAdsData[(i*3)+j].auctionEnded === false ? 
                         'Ingoing' : 'Completed'}
                     `;
                     divContainer.appendChild(divEle);
