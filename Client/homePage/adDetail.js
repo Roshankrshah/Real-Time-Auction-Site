@@ -7,6 +7,8 @@ const updateBtn = document.querySelector('.update-btn');
 const logoutBtn = document.querySelector('.logout-btn');
 const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
 
+import fetchUser from "./fetchUser.js";
+
 let status, noOfBids, timer, price, bidder;
 
 const socket = io('http://localhost:4444', {
@@ -24,11 +26,12 @@ socket.on('timer', (data) => {
     timer.innerText = data.data.timer;
 });
 
-socket.on('auctionEnded', (data) => {
+socket.on('auctionEnded', async(data) => {
     //alert('auction ended');
     if (data.action == 'sold') {
         //alert(`Winner is ${data.winner.username}`)
-        appendAlert(`Auction Ended and Winner is ${data.winner.username}`,'success');
+        const winner = await fetchUser(data.data.currentBidder);
+        appendAlert(`Auction Ended and Winner is ${winner}`,'success');
     } else {
         //alert('Item Remain Unsold');
         appendAlert(`Auction Ended and Item Remain Unsold `,'danger');
@@ -37,11 +40,11 @@ socket.on('auctionEnded', (data) => {
     //location.reload();
 })
 
-socket.on('bidPosted', (data) => {
+socket.on('bidPosted', async (data) => {
     console.log('bid', data.data);
     noOfBids.innerText = data.data.bids.length;
     price.innerText = data.data.currentPrice.$numberDecimal;
-    bidder.innerHTML = data.data.currentBidder;
+    bidder.innerHTML = await fetchUser(data.data.currentBidder);
 })
 
 
