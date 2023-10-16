@@ -5,6 +5,7 @@ const statusContainer = document.querySelector('.status-container');
 const modifyDom = document.querySelector('.modify-btns');
 const updateBtn = document.querySelector('.update-btn');
 const logoutBtn = document.querySelector('.logout-btn');
+const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
 
 let status, noOfBids, timer, price, bidder;
 
@@ -14,7 +15,8 @@ const socket = io('http://localhost:4444', {
 
 
 socket.on('auctionStarted', (data) => {
-    alert('Auction Now Started');
+    //alert('Auction Now Started');
+    appendAlert('Auction Now Started','info');
     status.innerText = 'Ingoing';
 });
 
@@ -23,13 +25,16 @@ socket.on('timer', (data) => {
 });
 
 socket.on('auctionEnded', (data) => {
-    alert('auction ended');
+    //alert('auction ended');
     if (data.action == 'sold') {
-        alert(`Winner is ${data.winner.username}`)
+        //alert(`Winner is ${data.winner.username}`)
+        appendAlert(`Auction Ended and Winner is ${data.winner.username}`,'success');
     } else {
-        alert('Item Remain Unsold');
+        //alert('Item Remain Unsold');
+        appendAlert(`Auction Ended and Item Remain Unsold `,'danger');
     }
-    console.log('auctionEnded', data);
+    //console.log('auctionEnded', data);
+    //location.reload();
 })
 
 socket.on('bidPosted', (data) => {
@@ -41,7 +46,7 @@ socket.on('bidPosted', (data) => {
 
 
 const adId = window.location.href.split('?')[1].split('=')[1];
-let roomId, bidPrice, inputBid, startBtn, duration, bidLen = 0, statusValue = 'Not Started Yet';
+let roomId, bidPrice, inputBid, startBtn, duration, bidLen = 0, statusValue = 'Not Started Yet',startPrice=0;
 
 console.log(adId);
 
@@ -57,6 +62,7 @@ const start = async () => {
         alert(resData.errors[0].msg);
     } else {
         console.log(resData);
+        startPrice = resData.currentPrice.$numberDecimal;
         roomId = resData.room;
         productImageDom.innerHTML = `
         <h2>${resData.productName}</h2>
@@ -248,7 +254,7 @@ const joinAuction = async () => {
                     <td class="status">${statusValue}</td>
                     <td class="noOfBids">${bidLen}</td>
                     <td class="timer">${duration}</td>
-                    <td class="price"></td>
+                    <td class="price">${startPrice}</td>
                     <td class="bidder"></td>
                 </tr>
             </table>`;
@@ -263,10 +269,10 @@ const joinAuction = async () => {
         inputBid = document.querySelector('.input-bid');
         bidBtn.addEventListener('click', placedBid);
     }
-
 }
 
 const placedBid = async () => {
+    alertPlaceholder.innerHTML = '';
     bidPrice = inputBid.value;
     const res = await fetch(`http://localhost:4444/bid/${adId}?amount=${bidPrice}`, {
         method: 'POST',
@@ -276,7 +282,12 @@ const placedBid = async () => {
     })
 
     const resData = await res.json();
-    console.log(resData);
+    if (res.status >= 400) {
+        //alert(resData.errors[0].msg);
+        appendAlert(`${resData.errors[0].msg}`,'warning');
+    } else {
+        console.log(resData);
+    }
 }
 
 const startAuction = async () => {
@@ -292,27 +303,44 @@ const startAuction = async () => {
         console.log(resData);
         modifyDom.innerHTML = '';
         startBtn.setAttribute('disabled', '');
-        /*statusContainer.innerHTML = `
+        statusContainer.innerHTML = `
             <p><strong>Auction Details</strong></p>
             <table>
                 <tr>
                     <th>Status</th>
                     <th>No. of Bids</th>
                     <th>Time Left (seconds)</th>
-                    <th>Base Price</th>
+                    <th>Current Price</th>
                     <th>Current Bidder</th>
                 </tr>
                 <tr>
                     <td class="status">Ingoing</td>
                     <td class="noOfBids">0</td>
-                    <td class="timer"></td>
-                    <td class="price"></td>
+                    <td class="timer">${duration}</td>
+                    <td class="price">${startPrice}</td>
                     <td class="bidder"></td>
                 </tr>
-            </table>`;*/
+            </table>`;
+        socket.emit('joinAd', (adId));
+        status = document.querySelector('.status');
+        noOfBids = document.querySelector('.noOfBids');
+        timer = document.querySelector('.timer');
+        price = document.querySelector('.price');
+        bidder = document.querySelector('.bidder');
     }
 }
 
+const appendAlert = (message, type) => {
+    const wrapper = document.createElement('div')
+    wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+    ].join('')
+
+    alertPlaceholder.append(wrapper)
+}
 
 logoutBtn.addEventListener('click', () => {
     localStorage.clear();
