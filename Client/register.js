@@ -22,8 +22,6 @@ registerBtn.addEventListener('click', async (e) => {
         if (phone != '')
             body.phone = phone;
 
-        console.log(body);
-
         const res = await fetch('http://localhost:4444/user', {
             method: 'POST',
             body: JSON.stringify(body),
@@ -32,9 +30,14 @@ registerBtn.addEventListener('click', async (e) => {
             },
         });
         const resData = await res.json();
-        if(res.status >= 400){
-            alert(resData.errors[0].msg)
-        }else {
+        if (res.status >= 400) {
+            let errMsg = '';
+            resData.errors.forEach(error => {
+                errMsg += error.msg;
+                errMsg += '\n';
+            });
+            alert(errMsg);
+        } else {
             console.log(resData);
             localStorage.setItem('token', resData.token);
             location.href = '/Client/homePage/home.html'

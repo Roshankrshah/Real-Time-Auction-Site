@@ -73,7 +73,7 @@ const start = async () => {
         <img src="${resData.image}" alt="Product Image">`;
         productDetailDom.innerHTML = `
         <h2>Product Details</h2>
-        <p><strong>Description</strong><br> ${resData.description}</p>
+        <p><strong>Description</strong><br> ${resData.description? resData.description: 'Not Available'}</p>
         <p><strong>Info</strong><br> Posted on: ${new Date(resData.updatedAt).toLocaleString()}
         <br> Seller: ${resData.owner.username}
         <br> Base Price: ₹ ${resData.basePrice.$numberDecimal}</p>`;

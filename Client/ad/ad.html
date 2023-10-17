@@ -51,7 +51,7 @@
             </div>
             <div class="mb-3">
                 <label for="InputName" class="form-label">Product Name</label>
-                <input type="text" class="form-control" id="InputName">
+                <input type="text" class="form-control" id="InputName" required>
             </div>
             <div class="mb-3">
                 <label for="InputCategory" class="form-label">Product Category</label>
@@ -61,15 +61,15 @@
             <div class="mb-3">
                 <label for="InputPrice" class="form-label">Product Base Price (₹)</label>
                 <input type="number" class="form-control" id="InputPrice"
-                    placeholder="Auction will start from this price">
+                    placeholder="Auction will start from this price" required>
             </div>
             <div class="mb-3">
                 <label for="InputQuantity" class="form-label">Duration (in seconds)</label>
-                <input type="text" class="form-control" id="InputDuration" placeholder="Duration in seconds">
+                <input type="text" class="form-control" id="InputDuration" placeholder="Duration in seconds" required>
             </div>
             <div class="mb-3">
                 <label for="InputDescription" class="form-label">Product Description</label>
-                <textarea class="form-control" id="InputDescription" rows="3"></textarea>
+                <textarea class="form-control" id="InputDescription" rows="3" required></textarea>
             </div>
             <button class="btn btn-primary submit">Post Ad</button>
         </form>
