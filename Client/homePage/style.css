@@ -1,3 +1,7 @@
+.container-fluid {
+    padding-left: 50px;
+}
+
 .product-container {
     display: flex;
     justify-content: space-between;
