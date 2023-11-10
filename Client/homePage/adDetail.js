@@ -11,7 +11,7 @@ import fetchUser from "./fetchUser.js";
 
 let status, noOfBids, timer, price, bidder;
 
-const socket = io('http://localhost:4444', {
+const socket = io('https://auction-site-a1vk.onrender.com', {
     path: '/socket/adpage'
 });
 
@@ -55,7 +55,7 @@ let roomId, bidPrice, inputBid, startBtn, duration, bidLen = 0, statusValue = 'N
 console.log(adId);
 
 const start = async () => {
-    const res = await fetch(`http://localhost:4444/ad/${adId}`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/ad/${adId}`, {
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
@@ -138,7 +138,7 @@ const start = async () => {
         }
     }
 
-    const user = await fetch(`http://localhost:4444/auth`, {
+    const user = await fetch(`https://auction-site-a1vk.onrender.com/auth`, {
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
@@ -161,7 +161,7 @@ const start = async () => {
                 startBtn.addEventListener('click', startAuction);
             }
         } else {
-            const roomDetail = await fetch(`http://localhost:4444/room/${resData.room}`, {
+            const roomDetail = await fetch(`https://auction-site-a1vk.onrender.com/room/${resData.room}`, {
                 headers: {
                     'x-auth-token': localStorage.getItem('token')
                 }
@@ -189,7 +189,7 @@ const start = async () => {
 start();
 
 const removeAd = async () => {
-    const res = await fetch(`http://localhost:4444/ad/${adId}`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/ad/${adId}`, {
         method: 'DELETE',
         headers: {
             'x-auth-token': localStorage.getItem('token')
@@ -210,7 +210,7 @@ updateBtn.addEventListener('click', async () => {
         basePrice: updatedPrice
     };
     console.log('fuck dani');
-    const res = await fetch(`http://localhost:4444/ad/${adId}`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/ad/${adId}`, {
         method: 'PUT',
         body: JSON.stringify(body),
         headers: {
@@ -228,7 +228,7 @@ updateBtn.addEventListener('click', async () => {
 
 const joinAuction = async () => {
     console.log(roomId)
-    const res = await fetch(`http://localhost:4444/room/join/${roomId}`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/room/join/${roomId}`, {
         method: 'POST',
         headers: {
             'x-auth-token': localStorage.getItem('token')
@@ -278,7 +278,7 @@ const joinAuction = async () => {
 const placedBid = async () => {
     alertPlaceholder.innerHTML = '';
     bidPrice = inputBid.value;
-    const res = await fetch(`http://localhost:4444/bid/${adId}?amount=${bidPrice}`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/bid/${adId}?amount=${bidPrice}`, {
         method: 'POST',
         headers: {
             'x-auth-token': localStorage.getItem('token')
@@ -295,7 +295,7 @@ const placedBid = async () => {
 }
 
 const startAuction = async () => {
-    const res = await fetch(`http://localhost:4444/auction/start/${adId}`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/auction/start/${adId}`, {
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
