@@ -1,6 +1,6 @@
 
 const fetchUser = async(id)=>{
-    const res = await fetch(`http://localhost:4444/user/${id}`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/user/${id}`, {
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
