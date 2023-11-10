@@ -2,10 +2,10 @@ const adsContainer = document.querySelector('.Ads-container');
 const logoutBtn = document.querySelector('.logout-btn');
 const alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 
-const socket = io('http://localhost:4444');
+const socket = io('https://auction-site-a1vk.onrender.com');
 
 const start = async () => {
-    const res = await fetch(`http://localhost:4444/ad`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/ad`, {
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
