@@ -11,7 +11,7 @@ loginBtn.addEventListener('click', async (e) => {
         password: password
     };
 
-    const res = await fetch('http://localhost:4444/auth', {
+    const res = await fetch('https://auction-site-a1vk.onrender.com/auth', {
         method: 'POST',
         body: JSON.stringify(body),
         headers: {
