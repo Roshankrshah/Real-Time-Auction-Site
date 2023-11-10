@@ -6,7 +6,7 @@ const carouselInner = document.querySelector('.carousel-inner');
 const purchasedDom = document.querySelector('.purchased-items');
 
 const start = async () => {
-    const res = await fetch(`http://localhost:4444/auth`, {
+    const res = await fetch(`https://auction-site-a1vk.onrender.com/auth`, {
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
@@ -24,7 +24,7 @@ const start = async () => {
         `;
     }
 
-    const postAds = await fetch('http://localhost:4444/user/products/posted', {
+    const postAds = await fetch('https://auction-site-a1vk.onrender.com/user/products/posted', {
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
@@ -88,7 +88,7 @@ const start = async () => {
         }
     }
 
-    const purchasedItem  = await fetch('http://localhost:4444/user/products/purchased',{
+    const purchasedItem  = await fetch('https://auction-site-a1vk.onrender.com/user/products/purchased',{
         headers: {
             'x-auth-token': localStorage.getItem('token')
         }
