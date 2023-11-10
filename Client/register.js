@@ -40,7 +40,7 @@ registerBtn.addEventListener('click', async (e) => {
         } else {
             console.log(resData);
             localStorage.setItem('token', resData.token);
-            location.href = '/Client/homePage/home.html'
+            location.href = '/homePage/home.html'
         }
     } else {
         alert('Check Password Again');
