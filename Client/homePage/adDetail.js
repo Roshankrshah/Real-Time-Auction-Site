@@ -200,7 +200,7 @@ const removeAd = async () => {
         alert(resData.errors[0].msg);
     } else {
         alert(resData.msg);
-        location.href = '/Client/homePage/home.html';
+        location.href = '/homePage/home.html';
     }
 }
 
@@ -348,5 +348,5 @@ const appendAlert = (message, type) => {
 
 logoutBtn.addEventListener('click', () => {
     localStorage.clear();
-    location.href = '/Client/index.html';
+    location.href = '/index.html';
 });
