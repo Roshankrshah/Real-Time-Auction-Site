@@ -76,6 +76,6 @@ submitBtn.addEventListener('click', async (e) => {
 
 logoutBtn.addEventListener('click', () => {
     localStorage.clear();
-    location.href = '/Client/index.html';
+    location.href = '/index.html';
 });
 
