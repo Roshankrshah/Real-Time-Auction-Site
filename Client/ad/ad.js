@@ -10,7 +10,7 @@ imageDom.addEventListener('change', async (e) => {
     const formData = new FormData();
     formData.append('image', imageFile);
 
-    const res = await axios.post('http://localhost:4444/upload/image', formData, {
+    const res = await axios.post('https://auction-site-a1vk.onrender.com/upload/image', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
             'x-auth-token': localStorage.getItem('token'),
@@ -51,7 +51,7 @@ submitBtn.addEventListener('click', async (e) => {
     }
 
     try {
-        const res = await axios.post('http://localhost:4444/ad', body, {
+        const res = await axios.post('https://auction-site-a1vk.onrender.com/ad', body, {
             headers: {
                 'x-auth-token': localStorage.getItem('token'),
                 'Content-Type': 'application/json'
