@@ -22,7 +22,7 @@ registerBtn.addEventListener('click', async (e) => {
         if (phone != '')
             body.phone = phone;
 
-        const res = await fetch('http://localhost:4444/user', {
+        const res = await fetch('https://auction-site-a1vk.onrender.com/user', {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
