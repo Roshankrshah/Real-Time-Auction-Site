@@ -122,7 +122,7 @@ const viewDetail = async(e)=>{
 
 logoutBtn.addEventListener('click', () => {
     localStorage.clear();
-    location.href = '/Client/index.html';
+    location.href = '/index.html';
 });
 
 start();
