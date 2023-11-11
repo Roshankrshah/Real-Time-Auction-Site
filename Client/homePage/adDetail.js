@@ -11,6 +11,7 @@ import fetchUser from "./fetchUser.js";
 
 let status, noOfBids, timer, price, bidder;
 
+
 const socket = io('https://auction-site-a1vk.onrender.com', {
     path: '/socket/adpage'
 });
