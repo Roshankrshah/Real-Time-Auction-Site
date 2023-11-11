@@ -16,6 +16,7 @@ const bid = require('./routes/bid');
 
 const app = express();
 const server = createServer(app);
+
 const io = socketio.init(server);
 const adIo = socketio.initAdIo(server,'/socket/adpage');
 
